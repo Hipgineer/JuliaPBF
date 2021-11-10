@@ -1,4 +1,4 @@
-using StructPBF
+using JuliaPBF.StructPBF
 
 function GenParticles(inAnsDataStruct::AnalysisDataStruct)
     npart = inAnsDataStruct.nMaxParticles

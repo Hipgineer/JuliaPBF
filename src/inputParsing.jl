@@ -1,5 +1,6 @@
-using StructPBF
+# include("StructPBF.jl")
 using LightXML
+using JuliaPBF.StructPBF
 
 function parsing_xml_file(xmldir::String)
         
