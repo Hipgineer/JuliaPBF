@@ -1,4 +1,4 @@
-using pbdStruct2D
+using StructPBF
 
 function GenParticles(inAnsDataStruct::AnalysisDataStruct)
     npart = inAnsDataStruct.nMaxParticles

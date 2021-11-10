@@ -1,4 +1,4 @@
-module pbdStruct2D
+module StructPBF
 import Base.+, Base.*, Base.-, Base.isless, Base.abs2
 ## Stnadard
 # 

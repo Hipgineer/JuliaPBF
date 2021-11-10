@@ -1,4 +1,4 @@
-using pbdStruct2D
+using StructPBF
 
 function CalculateGravityForce(inSimDataStruct::SimulationDataStruct,gravity::Vec2, Δt::Float64)
     for ii in 1:length(inSimDataStruct.particles)

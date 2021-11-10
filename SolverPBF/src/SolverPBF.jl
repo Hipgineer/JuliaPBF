@@ -1,6 +1,6 @@
-module PbdSolver2D
+module SolverPBF
 
-using pbdStruct2D
+using StructPBF
 export SolverPreProcessing
 ########################################################
 ##                PREPROCESSING in SOVER              ##

@@ -1,4 +1,4 @@
-using pbdStruct2D
+using StructPBF
 using LightXML
 
 function parsing_xml_file(xmldir::String)
