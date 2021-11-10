@@ -1,8 +1,7 @@
-# include("StructPBF.jl")
 using LightXML
 using JuliaPBF.StructPBF
 
-function parsing_xml_file(xmldir::String)
+function Parsing_xml_file(xmldir::String)
         
     # OPEN XML OBJECT
     xdoc = parse_file(xmldir) # xmldir = "./input.xml"

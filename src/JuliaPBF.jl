@@ -9,8 +9,8 @@ export
     UI_dev,
     Solver,
     StructPBF
-include("StructPBF.jl")
-using .StructPBF
+include("Struct/StructPBF.jl") # Types are defined in the StructPBF Module
+using .StructPBF        # Load StructPBF Module
 
     """
     User Interface for Developer: \n
@@ -21,8 +21,11 @@ using .StructPBF
         # ====================================================
     """
     module UI_dev
-        export parsing_xml_file # inputPartsing.jl
-        include("inputParsing.jl")
+        export 
+            Parsing_xml_file, 
+            Writing_csv_file  
+        include("UI_dev/ParsingInput.jl")
+        include("UI_dev/WritingOutput.jl")
     end
 
     """
@@ -38,8 +41,8 @@ using .StructPBF
         export 
             PreProcessing,
             Update
-        include("PreProcessingFunctions.jl")
-        include("PhysicalFunctions.jl")
+        include("Solver/PreProcessingFunctions.jl")
+        include("Solver/PhysicalFunctions.jl")
 
         """ 
         PREPROCESSING in SOVER : 

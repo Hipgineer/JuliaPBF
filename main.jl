@@ -1,5 +1,4 @@
-# set       
-println("")
+# set
 push!(LOAD_PATH,pwd())
 using JuliaPBF
 using BenchmarkTools

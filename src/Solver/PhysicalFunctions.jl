@@ -100,8 +100,6 @@ function CalculateSomethingWithNearParticles(inSimDataStruct::SimulationDataStru
     end
 end
 
-
-
 # private
 
 function CalculateKernel(absDelPos::Float64, inAnsDataStruct::AnalysisDataStruct)
