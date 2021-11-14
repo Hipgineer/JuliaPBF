@@ -6,7 +6,7 @@
 """
 module JuliaPBF
 export
-    UI_dev,
+    IO_dev,
     Solver,
     StructPBF
 include("Struct/StructPBF.jl") # Types are defined in the StructPBF Module
@@ -20,12 +20,15 @@ using .StructPBF        # Load StructPBF Module
             {AnalysisDataStruct} = UI_dev.parsing_xml_file({xmlFileDir::string})
         # ====================================================
     """
-    module UI_dev
+    module IO_dev
         export 
+            # PreProcessing
             Parsing_xml_file, 
-            Writing_csv_file  
-        include("UI_dev/ParsingInput.jl")
-        include("UI_dev/WritingOutput.jl")
+            # PostProcessing
+            Writing_ascii_file
+
+        include("IO_dev/PreProcessing.jl")
+        include("IO_dev/PostProcessing.jl")
     end
 
     """
@@ -68,6 +71,9 @@ using .StructPBF        # Load StructPBF Module
         function Update(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
             Δt = inAnsDataStruct.timeStep.dt
             gravity = inAnsDataStruct.gravity
+
+            tempos = zeros(length(inSimDataStruct.particles))
+            lambda = zeros(length(inSimDataStruct.particles))
             
             println("Calculate Grid ID: ")
             @time CalculateGridId(inSimDataStruct, inAnsDataStruct)
@@ -77,9 +83,10 @@ using .StructPBF        # Load StructPBF Module
             @time CalculateGravityForce(inSimDataStruct,gravity,Δt)
             println("Calculate Something with Near Particles: ")
             @time CalculateSomethingWithNearParticles(inSimDataStruct, inAnsDataStruct)
-
             println("Calculate Lambda: ")
             @time CalculateLambda(inSimDataStruct, inAnsDataStruct)
+            println("Calculate Position Correction: ")
+            @time CalculatePositionCorrection(inSimDataStruct, inAnsDataStruct)
         end
     end
 

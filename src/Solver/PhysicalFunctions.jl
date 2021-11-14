@@ -41,8 +41,11 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
         I_PARTICLE = inSimDataStruct.particles[ii]
         density0   = inAnsDataStruct.a_phases[I_PARTICLE.phase].Fluid.density
         I_density  = 0.0 
+
+        epsilon = 0.000000000001
+        kernel = 0.0
         I_kConstr  = 0.0
-        I_LambdaDem= 0.0
+        I_LambdaDen= 0.0
 
         iGridID = I_PARTICLE.gridID
         gsta = iGridID == 1 ? 1 : (inSimDataStruct.grids.nNearGrid[iGridID-1]+1)
@@ -58,18 +61,52 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
                 absDelPos  = sqrt(absDelPos2)
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
                     kernel = CalculateKernel(absDelPos, inAnsDataStruct)
-                    kernelv= CalculateKernel(delPos,inAnsDataStruct)
                     I_density   += I_PARTICLE.mass * kernel
-                    I_kConstr   += kernelv*(1/density0)
-                    I_LambdaDem += abs2(kernelv*(1/density0))
+                    if absDelPos > epsilon
+                        kernelv= CalculateKernel(delPos,inAnsDataStruct)
+                        I_kConstr   += kernelv*(1/density0)
+                        I_LambdaDen += abs2(kernelv*(1/density0))
+                    end
                 end
             end
         end
-        
         I_constraint = I_density / density0  - 1.0
-        I_LambdaDem  += abs2(I_kConstr)
-        I_Lambda     = -I_constraint / I_LambdaDem
+        I_LambdaDen  += abs2(I_kConstr)
+        inSimDataStruct.particles[ii] = lambdaChange(I_PARTICLE, -I_constraint / (I_LambdaDen+epsilon))
+    end
+end
 
+function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
+    #이거를 어떤 폼으로 만들어 버리는건 어때? 가능한가?
+    for ii in 1: \ # length(inSimDataStruct.particles) #
+        I_PARTICLE = inSimDataStruct.particles[ii]
+        density0   = inAnsDataStruct.a_phases[I_PARTICLE.phase].Fluid.density
+        I_density  = 0.0 
+
+        epsilon = 0.000000000001
+        positionCorrection = 0.0
+        
+        iGridID = I_PARTICLE.gridID
+        gsta = iGridID == 1 ? 1 : (inSimDataStruct.grids.nNearGrid[iGridID-1]+1)
+        gend = inSimDataStruct.grids.nNearGrid[iGridID]     
+        for gg in gsta:gend
+            gridIndex = inSimDataStruct.grids.nearGridIndex[gg]
+            pjsta = gridIndex == 1 ? 1 : (inSimDataStruct.grids.nGridParticles[gridIndex-1]+1)
+            pjend = inSimDataStruct.grids.nGridParticles[gridIndex]
+            for jj in pjsta:pjend
+                J_PARTICLE = inSimDataStruct.particles[jj]
+                delPos  = I_PARTICLE.pos - J_PARTICLE.pos
+                absDelPos2 = abs2(delPos)
+                absDelPos  = sqrt(absDelPos2)
+                if absDelPos < 2*inAnsDataStruct.kernelRadius
+                    if absDelPos > epsilon
+                        kernelv= CalculateKernel(delPos,inAnsDataStruct)
+                        positionCorrection += (I_PARTICLE.lambda + J_PARTICLE.lambda)*kernelv*(1/density0)
+                    end
+                end
+            end
+        end
+        inSimDataStruct.particles[ii] = tempposAdd(inSimDataStruct.particles[ii], positionCorrection)
     end
 end
 
@@ -106,8 +143,9 @@ function CalculateKernel(absDelPos::Float64, inAnsDataStruct::AnalysisDataStruct
     H     = inAnsDataStruct.kernelRadius
     qq    = absDelPos / H
     alpha = 7 / (4*π*H*H) # For 2-Dim
-    return alpha * (1- qq*0.5)^4 * (2*qq +1)
+    return alpha * (1- qq*0.5)^4 * (1 + 2.0*qq)
 end
+
 function CalculateKernel(delPos::Vec2, inAnsDataStruct::AnalysisDataStruct)
     H         = inAnsDataStruct.kernelRadius
     absDelPos = sqrt(abs2(delPos))

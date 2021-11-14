@@ -2,14 +2,14 @@
 <AnalysisSetting>
 
     <!-- Simulation Setting -->
-    <TimeStep type="1" dt="0.01"></TimeStep>
+    <TimeStep type="1" dt="0.016"></TimeStep>
     <Gravity x="0.0" y="-9.81"></Gravity>
-    <Particles nMaxParticles="100000" maxParticleSize="0.01"></Particles>
+    <Particles nMaxParticles="100000" maxParticleSize="0.1"></Particles>
     <AnalysisBox startX="0.0" startY="0.0" endX="10.0" endY="10.0"></AnalysisBox>
-
+    
     <!-- Propoerty Setting -->
     <PhaseProperties number="1">
-        <phase type="Fluid" name="water" size="0.01" density="1000.0" viscosity="0.001"> </phase>
+        <phase type="Fluid" name="water" size="0.1" density="1000.0" viscosity="0.001"> </phase>
         <!-- <phase type="Solid" name="rock" size="0.001" density="2650"> </phase> -->
     </PhaseProperties>
 
@@ -20,5 +20,10 @@
     </InitialBox>
 
     <!-- Boundary Setting -->
-
+    <Boundaries number="3">
+        <Line startX="0.0" startY="0.0" endX="10.0" endY="10.0"></Line>
+        <Line startX="0.0" startY="0.0" endX="10.0" endY="10.0"></Line>
+        <Box startX="0.0" startY="0.0" endX="10.0" endY="10.0"></Box>
+    </Boundaries>
+    
 </AnalysisSetting>

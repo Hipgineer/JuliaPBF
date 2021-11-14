@@ -90,6 +90,23 @@ function Parsing_xml_file(xmldir::String)
             end
         end
 
+        # 작업 중
+        if name(depth1) == "Boundaries"
+            # for depth2 in child_nodes(depth1)
+            #     if name(depth2) == "Line"
+            #         in_startPoint = Vec2(parse(Float64, attribute(XMLElement(depth1),"startX")), parse(Float64, attribute(XMLElement(depth1),"startY")))
+            #         in_endPoint   = Vec2(parse(Float64, attribute(XMLElement(depth1),"endX")), parse(Float64, attribute(XMLElement(depth1),"endY")))
+            #         # in_BoundaryLines = Box2(in_startPoint, in_endPoint)
+            #     end
+            #     if name(depth2) == "Box"
+            #         in_startPoint = Vec2(parse(Float64, attribute(XMLElement(depth1),"startX")), parse(Float64, attribute(XMLElement(depth1),"startY")))
+            #         in_endPoint   = Vec2(parse(Float64, attribute(XMLElement(depth1),"endX")), parse(Float64, attribute(XMLElement(depth1),"endY")))
+            #         # in_boundaryBox = Box2(in_startPoint, in_endPoint)
+            #     end
+            # end
+
+        end
+
     end
 
 

@@ -9,6 +9,7 @@ function GenParticles(inAnsDataStruct::AnalysisDataStruct)
                                 Vec2(),                           # vel    :: Vec2
                                 Vec2(),                           # pos    :: Vec2
                                 Vec2(),                           # temppos:: Vec2
+                                0.0,                              # Lambda :: Float64
                                 0.0,                              # mass   :: Float64
                                 0.0)                              # phase  :: Int64
     end
@@ -121,6 +122,7 @@ function FillInitialBox(inAnsDataStruct::AnalysisDataStruct, arParticleData::Vec
                                         Vec2(),         # vel    :: Vec2
                                         Vec2(xx,yy),    # pos    :: Vec2
                                         Vec2(xx,yy),    # temppos:: Vec2
+                                        0.0,             # lambda :: Float64
                                         initBox_mass,   # mass   :: Float64
                                         initBox_phaseID)# phase  :: Int64
                 ID += 1
