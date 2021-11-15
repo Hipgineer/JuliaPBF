@@ -101,13 +101,33 @@ export SimulationDataStruct
             mass        ::Float64
             phase       ::Int64 # SimulationData와 맞춰진. 이걸타고 들어가서 Fluid/Solid 나뉠것임 
     end
-    export gridIDChange, lambdaChange, velAdd, posAdd, tempposAdd, massAdd
-    gridIDChange(a::ParticleData, b::Int64)   = ParticleData(b,        a.vel,   a.pos,   a.temppos,   a.lambda,   a.mass,   a.phase)
-    lambdaChange(a::ParticleData, b::Float64) = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   b,          a.mass,   a.phase)
-    velAdd(a::ParticleData, b::Vec2)          = ParticleData(a.gridID, a.vel+b, a.pos,   a.temppos,   a.lambda,   a.mass,   a.phase)
-    posAdd(a::ParticleData, b::Vec2)          = ParticleData(a.gridID, a.vel,   a.pos+b, a.temppos,   a.lambda,   a.mass,   a.phase)
-    tempposAdd(a::ParticleData, b::Vec2)      = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos+b, a.lambda,   a.mass,   a.phase)
-    massAdd(a::ParticleData, b::Float64)      = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   a.lambda,   a.mass+b, a.phase)
+    export 
+        # Change
+        changeGridID, 
+        changeLambda, 
+        changeVel,
+        changePos,
+        changeTemppos,
+        changeMass,
+        # Add
+        addVel, 
+        addPos, 
+        addTemppos, 
+        addmMass
+    # CHANGE VALUEs
+    changeGridID(a::ParticleData, b::Int64)   = ParticleData(b,        a.vel,   a.pos,   a.temppos,   a.lambda,   a.mass,   a.phase)
+    changeLambda(a::ParticleData, b::Float64) = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   b,          a.mass,   a.phase)
+    changeVel(a::ParticleData, b::Vec2)       = ParticleData(a.gridID, b,       a.pos,   a.temppos,   a.lambda,   a.mass,   a.phase)
+    changePos(a::ParticleData, b::Vec2)       = ParticleData(a.gridID, a.vel,   b,       a.temppos,   a.lambda,   a.mass,   a.phase)
+    changeTemppos(a::ParticleData, b::Vec2)   = ParticleData(a.gridID, a.vel,   a.pos,   b,           a.lambda,   a.mass,   a.phase)
+    changeMass(a::ParticleData, b::Float64)   = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   a.lambda,   b,        a.phase)
+    # ADD VALUEs
+    addVel(a::ParticleData, b::Vec2)          = ParticleData(a.gridID, a.vel+b, a.pos,   a.temppos,   a.lambda,   a.mass,   a.phase)
+    addPos(a::ParticleData, b::Vec2)          = ParticleData(a.gridID, a.vel,   a.pos+b, a.temppos,   a.lambda,   a.mass,   a.phase)
+    addTemppos(a::ParticleData, b::Vec2)      = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos+b, a.lambda,   a.mass,   a.phase)
+    addMass(a::ParticleData, b::Float64)      = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   a.lambda,   a.mass+b, a.phase)
+    # ETC
+    updatePos(a::ParticleData)                = ParticleData(a.gridID, a.vel,   a.temppos,  Vec2(),   a.lambda,   a.mass,   a.phase)
     isless(a::ParticleData,b::ParticleData)   = isless(a.gridID::Int64,b.gridID::Int64) #for Sorting by gridID
 
     struct BoundaryData

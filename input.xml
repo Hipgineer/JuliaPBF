@@ -16,7 +16,7 @@
     <!-- Particle Setting -->
     <InitialBox number="1">
         <!-- 초기유속 넣는 것도 작업해야함 -->
-        <initBox phaseID="1" startX="0.0" startY="0.0" endX="2.0" endY="5.0"></initBox>
+        <initBox phaseID="1" startX="1.0" startY="2.0" endX="2.0" endY="5.0"></initBox>
     </InitialBox>
 
     <!-- Boundary Setting -->

@@ -2,8 +2,8 @@ using JuliaPBF.StructPBF
 
 function CalculateGravityForce(inSimDataStruct::SimulationDataStruct,gravity::Vec2, Δt::Float64)
     for ii in 1:length(inSimDataStruct.particles)
-        inSimDataStruct.particles[ii] = velAdd(inSimDataStruct.particles[ii], gravity*Δt)
-        inSimDataStruct.particles[ii] = tempposAdd(inSimDataStruct.particles[ii], inSimDataStruct.particles[ii].vel*Δt)
+        inSimDataStruct.particles[ii] = addVel(inSimDataStruct.particles[ii], gravity*Δt)
+        inSimDataStruct.particles[ii] = addTemppos(inSimDataStruct.particles[ii], inSimDataStruct.particles[ii].vel*Δt)
     end
 end
 
@@ -21,12 +21,12 @@ function CalculateGridId(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
     alivedParticles = 0
 
     for ii in 1:length(inSimDataStruct.particles)
-        a = Int64(ceil((inSimDataStruct.particles[ii].pos.x-start_point.x)/grid_size)) + (Int64(ceil((inSimDataStruct.particles[ii].pos.y-start_point.y)/grid_size)) - 1)*n_Grid_x
+        a = Int64(ceil((inSimDataStruct.particles[ii].temppos.x-start_point.x)/grid_size)) + (Int64(ceil((inSimDataStruct.particles[ii].temppos.y-start_point.y)/grid_size)) - 1)*n_Grid_x
         if (totalGridNum < a)||(a < 0)
-            inSimDataStruct.particles[ii] = gridIDChange(inSimDataStruct.particles[ii],totalGridNum+1)
+            inSimDataStruct.particles[ii] = changeGridID(inSimDataStruct.particles[ii],totalGridNum+1)
             continue
         end
-        inSimDataStruct.particles[ii] = gridIDChange(inSimDataStruct.particles[ii],a)
+        inSimDataStruct.particles[ii] = changeGridID(inSimDataStruct.particles[ii],a)
         alivedParticles += 1
         inSimDataStruct.grids.nGridParticles[a] +=1
     end
@@ -56,7 +56,7 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
             pjend = inSimDataStruct.grids.nGridParticles[gridIndex]
             for jj in pjsta:pjend
                 J_PARTICLE = inSimDataStruct.particles[jj]
-                delPos  = I_PARTICLE.pos - J_PARTICLE.pos
+                delPos  = I_PARTICLE.temppos - J_PARTICLE.temppos
                 absDelPos2 = abs2(delPos)
                 absDelPos  = sqrt(absDelPos2)
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
@@ -77,10 +77,10 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
                 end
             end
         end
-        println(ii,", ", I_density)
+        # println(ii,", ", I_density)
         I_constraint = I_density / density0  - 1.0
         I_LambdaDen  += abs2(I_kConstr)
-        inSimDataStruct.particles[ii] = lambdaChange(I_PARTICLE, -I_constraint / (I_LambdaDen+epsilon))
+        inSimDataStruct.particles[ii] = changeLambda(I_PARTICLE, -I_constraint / (I_LambdaDen+epsilon))
     end
 end
 
@@ -92,7 +92,7 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
         I_density  = 0.0 
 
         epsilon = 0.000000000001
-        positionCorrection = 0.0
+        positionCorrection = Vec2()
         
         iGridID = I_PARTICLE.gridID
         gsta = iGridID == 1 ? 1 : (inSimDataStruct.grids.nNearGrid[iGridID-1]+1)
@@ -103,7 +103,7 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
             pjend = inSimDataStruct.grids.nGridParticles[gridIndex]
             for jj in pjsta:pjend
                 J_PARTICLE = inSimDataStruct.particles[jj]
-                delPos  = I_PARTICLE.pos - J_PARTICLE.pos
+                delPos  = I_PARTICLE.temppos - J_PARTICLE.temppos
                 absDelPos2 = abs2(delPos)
                 absDelPos  = sqrt(absDelPos2)
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
@@ -122,7 +122,15 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
                 end
             end
         end
-        inSimDataStruct.particles[ii] = tempposAdd(inSimDataStruct.particles[ii], positionCorrection)
+        inSimDataStruct.particles[ii] = addTemppos(inSimDataStruct.particles[ii], positionCorrection)
+    end
+end
+
+function CalculateUpdate(inSimDataStruct::SimulationDataStruct,gravity::Vec2, Δt::Float64)
+    for ii in 1:length(inSimDataStruct.particles)
+        I_PARTICLE = inSimDataStruct.particles[ii]
+        inSimDataStruct.particles[ii] = changeVel(I_PARTICLE, (I_PARTICLE.tempos-I_PARTICLE.pos)/Δt)
+        inSimDataStruct.particles[ii] = updatePos(I_PARTICLE)
     end
 end
 
