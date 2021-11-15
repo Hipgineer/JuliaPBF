@@ -60,16 +60,24 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
                 absDelPos2 = abs2(delPos)
                 absDelPos  = sqrt(absDelPos2)
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
+
                     kernel = CalculateKernel(absDelPos, inAnsDataStruct)
                     I_density   += I_PARTICLE.mass * kernel
+                    
+                    if ii == jj
+                        continue
+                    end
+
                     if absDelPos > epsilon
                         kernelv= CalculateKernel(delPos,inAnsDataStruct)
-                        I_kConstr   += kernelv*(1/density0)
-                        I_LambdaDen += abs2(kernelv*(1/density0))
+                        I_kConstr   += kernelv*(J_PARTICLE.mass/density0)
+                        I_LambdaDen += abs2(kernelv*(J_PARTICLE.mass/density0))
                     end
+
                 end
             end
         end
+        println(ii,", ", I_density)
         I_constraint = I_density / density0  - 1.0
         I_LambdaDen  += abs2(I_kConstr)
         inSimDataStruct.particles[ii] = lambdaChange(I_PARTICLE, -I_constraint / (I_LambdaDen+epsilon))
@@ -78,7 +86,7 @@ end
 
 function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
     #이거를 어떤 폼으로 만들어 버리는건 어때? 가능한가?
-    for ii in 1: \ # length(inSimDataStruct.particles) #
+    for ii in 1: inSimDataStruct.alivedParticles[1] # length(inSimDataStruct.particles) #
         I_PARTICLE = inSimDataStruct.particles[ii]
         density0   = inAnsDataStruct.a_phases[I_PARTICLE.phase].Fluid.density
         I_density  = 0.0 
@@ -101,7 +109,15 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
                     if absDelPos > epsilon
                         kernelv= CalculateKernel(delPos,inAnsDataStruct)
-                        positionCorrection += (I_PARTICLE.lambda + J_PARTICLE.lambda)*kernelv*(1/density0)
+                        #Tensile Instability
+                        dq = 0.2
+                        k  = 0.1
+                        n  = 4.0
+                        kernela= CalculateKernel(absDelPos,inAnsDataStruct)
+                        kernelb= CalculateKernel(dq*inAnsDataStruct.kernelRadius,inAnsDataStruct)
+                        scorr = -k*(kernela/kernelb)^n
+                        #
+                        positionCorrection += (I_PARTICLE.lambda + J_PARTICLE.lambda + scorr)*kernelv*(1/density0)
                     end
                 end
             end
@@ -151,6 +167,9 @@ function CalculateKernel(delPos::Vec2, inAnsDataStruct::AnalysisDataStruct)
     absDelPos = sqrt(abs2(delPos))
     qq        =  absDelPos / H
     alpha = 7 / (4*π*H*H) # For 2-Dim
+    if (absDelPos < 0.000000000000001)
+        return 0.0
+    end
     return (-5 * alpha * (1- qq*0.5)^3 * qq / absDelPos) * delPos
 end
 # function UpdateGravityParallel(inSimulationDataStruct::SimulationDataStruct,gravity::Vec2, Δt::Real)
