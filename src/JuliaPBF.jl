@@ -72,21 +72,22 @@ using .StructPBF        # Load StructPBF Module
             Δt = inAnsDataStruct.timeStep.dt
             gravity = inAnsDataStruct.gravity
 
-            tempos = zeros(length(inSimDataStruct.particles))
-            lambda = zeros(length(inSimDataStruct.particles))
-            
-            println("Calculate Grid ID: ")
-            @time CalculateGridId(inSimDataStruct, inAnsDataStruct)
-            println("Sorting by Grid ID: ")
-            @time sort!(inSimDataStruct.particles)
             println("Calculate Gravity Force: ")
             @time CalculateGravityForce(inSimDataStruct,gravity,Δt)
-            println("Calculate Something with Near Particles: ")
-            @time CalculateSomethingWithNearParticles(inSimDataStruct, inAnsDataStruct)
-            println("Calculate Lambda: ")
-            @time CalculateLambda(inSimDataStruct, inAnsDataStruct)
-            println("Calculate Position Correction: ")
-            @time CalculatePositionCorrection(inSimDataStruct, inAnsDataStruct)
+            # println("Calculate Something with Near Particles: ")
+            # @time CalculateSomethingWithNearParticles(inSimDataStruct, inAnsDataStruct)
+            for iteration in 1:3  
+                println(iteration, "-Calculate Grid ID: ")
+                @time CalculateGridId(inSimDataStruct, inAnsDataStruct)
+                println(iteration, "-Sorting by Grid ID: ")
+                @time sort!(inSimDataStruct.particles)
+                println(iteration,"-Calculate Lambda: ")
+                @time CalculateLambda(inSimDataStruct, inAnsDataStruct)
+                println(iteration,"-Calculate Position Correction: ")
+                @time CalculatePositionCorrection(inSimDataStruct, inAnsDataStruct)
+            end
+            println("CalculateUpdate: ")
+            @time CalculateUpdate(inSimDataStruct,Δt)
         end
     end
 

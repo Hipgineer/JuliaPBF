@@ -113,7 +113,9 @@ export SimulationDataStruct
         addVel, 
         addPos, 
         addTemppos, 
-        addmMass
+        addmMass,
+        # ETC
+        updatePos
     # CHANGE VALUEs
     changeGridID(a::ParticleData, b::Int64)   = ParticleData(b,        a.vel,   a.pos,   a.temppos,   a.lambda,   a.mass,   a.phase)
     changeLambda(a::ParticleData, b::Float64) = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   b,          a.mass,   a.phase)
@@ -127,7 +129,7 @@ export SimulationDataStruct
     addTemppos(a::ParticleData, b::Vec2)      = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos+b, a.lambda,   a.mass,   a.phase)
     addMass(a::ParticleData, b::Float64)      = ParticleData(a.gridID, a.vel,   a.pos,   a.temppos,   a.lambda,   a.mass+b, a.phase)
     # ETC
-    updatePos(a::ParticleData)                = ParticleData(a.gridID, a.vel,   a.temppos,  Vec2(),   a.lambda,   a.mass,   a.phase)
+    updatePos(a::ParticleData)                = ParticleData(a.gridID, a.vel,   a.temppos,a.temppos,  a.lambda,   a.mass,   a.phase)
     isless(a::ParticleData,b::ParticleData)   = isless(a.gridID::Int64,b.gridID::Int64) #for Sorting by gridID
 
     struct BoundaryData

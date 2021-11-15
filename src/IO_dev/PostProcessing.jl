@@ -6,7 +6,7 @@ function Writing_ascii_file(inSimDataStruct::SimulationDataStruct, inAnsDataStru
     io_buffer = IOBuffer()
     @printf(io_buffer, "vx\tvy\tpx\tpy\tλ\n")
     for ii in 1:inSimDataStruct.alivedParticles[1]#length(inSimDataStruct.particles)
-        @printf(io_buffer, "%10.3f\t%10.3f\t%10.3f\t%10.3f\t%10.3f\n",interFloat64Array[2,ii],interFloat64Array[3,ii],interFloat64Array[6,ii],interFloat64Array[7,ii],interFloat64Array[8,ii])
+        @printf(io_buffer, "%10.3f\t%10.3f\t%10.3f\t%10.3f\t%10.3f\n",interFloat64Array[2,ii],interFloat64Array[3,ii],interFloat64Array[4,ii],interFloat64Array[5,ii],interFloat64Array[8,ii])
     end 
     write("out.txt", take!(io_buffer))
 end

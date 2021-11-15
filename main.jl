@@ -16,3 +16,7 @@ simulationData = JuliaPBF.Solver.PreProcessing(analysisData) # FillInitialBox, G
 JuliaPBF.Solver.Update(simulationData, analysisData);
 
 @time JuliaPBF.IO_dev.Writing_ascii_file(simulationData, analysisData)
+## Do Physical Calculation
+JuliaPBF.Solver.Update(simulationData, analysisData);
+
+@time JuliaPBF.IO_dev.Writing_ascii_file(simulationData, analysisData)

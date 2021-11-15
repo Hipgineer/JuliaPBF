@@ -126,11 +126,10 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
     end
 end
 
-function CalculateUpdate(inSimDataStruct::SimulationDataStruct,gravity::Vec2, Δt::Float64)
+function CalculateUpdate(inSimDataStruct::SimulationDataStruct, Δt::Float64)
     for ii in 1:length(inSimDataStruct.particles)
-        I_PARTICLE = inSimDataStruct.particles[ii]
-        inSimDataStruct.particles[ii] = changeVel(I_PARTICLE, (I_PARTICLE.tempos-I_PARTICLE.pos)/Δt)
-        inSimDataStruct.particles[ii] = updatePos(I_PARTICLE)
+        inSimDataStruct.particles[ii] = changeVel(inSimDataStruct.particles[ii], (inSimDataStruct.particles[ii].temppos-inSimDataStruct.particles[ii].pos)*(1.0/Δt))
+        inSimDataStruct.particles[ii] = updatePos(inSimDataStruct.particles[ii])
     end
 end
 
