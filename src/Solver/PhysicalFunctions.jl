@@ -43,9 +43,11 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
         I_density  = 0.0 
 
         epsilon = 0.000000000001
+        relaxationParameter = 1000#위치수정을 작게해줭..'ㅁ'..
+
         kernel = 0.0
         I_kConstr  = 0.0
-        I_LambdaDen= 0.0
+        I_LambdaDen= 0.0 
 
         iGridID = I_PARTICLE.gridID
         gsta = iGridID == 1 ? 1 : (inSimDataStruct.grids.nNearGrid[iGridID-1]+1)
@@ -64,29 +66,30 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
                     kernel = CalculateKernel(absDelPos, inAnsDataStruct)
                     I_density   += I_PARTICLE.mass * kernel
                     
-                    if ii == jj
-                        continue
-                    end
+                        if ii == jj
+                            continue
+                        end
 
                     if absDelPos > epsilon
                         kernelv= CalculateKernel(delPos,inAnsDataStruct)
                         I_kConstr   += kernelv*(J_PARTICLE.mass/density0)
                         I_LambdaDen += abs2(kernelv*(J_PARTICLE.mass/density0))
                     end
-
                 end
             end
         end
-        # println(ii,", ", I_density)
         I_constraint = I_density / density0  - 1.0
         I_LambdaDen  += abs2(I_kConstr)
-        inSimDataStruct.particles[ii] = changeLambda(I_PARTICLE, -I_constraint / (I_LambdaDen+epsilon))
+        inSimDataStruct.particles[ii] = changeLambda(I_PARTICLE, -I_constraint / (I_LambdaDen+relaxationParameter))
+        # println(ii, "\t", I_PARTICLE.temppos.x,"\t", I_PARTICLE.temppos.y,"\t", I_density,"\t", I_constraint,"\t",-I_constraint / (I_LambdaDen+epsilon),"\t",abs2(I_kConstr))
     end
 end
 
 function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
+    P_FLUID_NUM = inSimDataStruct.alivedParticles[1] # 1: alived Fluid
+    dTemppos = Vector{Vec2}(undef, P_FLUID_NUM)
     #이거를 어떤 폼으로 만들어 버리는건 어때? 가능한가?
-    for ii in 1: inSimDataStruct.alivedParticles[1] # length(inSimDataStruct.particles) #
+    for ii in 1: P_FLUID_NUM
         I_PARTICLE = inSimDataStruct.particles[ii]
         density0   = inAnsDataStruct.a_phases[I_PARTICLE.phase].Fluid.density
         I_density  = 0.0 
@@ -108,21 +111,27 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
                 absDelPos  = sqrt(absDelPos2)
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
                     if absDelPos > epsilon
-                        kernelv= CalculateKernel(delPos,inAnsDataStruct)
-                        #Tensile Instability
-                        dq = 0.2
-                        k  = 0.1
-                        n  = 4.0
-                        kernela= CalculateKernel(absDelPos,inAnsDataStruct)
-                        kernelb= CalculateKernel(dq*inAnsDataStruct.kernelRadius,inAnsDataStruct)
-                        scorr = -k*(kernela/kernelb)^n
-                        #
-                        positionCorrection += (I_PARTICLE.lambda + J_PARTICLE.lambda + scorr)*kernelv*(1/density0)
+                        if ii != jj 
+                            kernelv= CalculateKernel(delPos,inAnsDataStruct)
+                            #Tensile Instability
+                            dq = 0.1
+                            k  = 0.1
+                            n  = 4.0
+                            kernela= CalculateKernel(absDelPos,inAnsDataStruct)
+                            kernelb= CalculateKernel(dq*inAnsDataStruct.kernelRadius,inAnsDataStruct)
+                            scorr = -k*(kernela/kernelb)^n
+                            #
+                            positionCorrection += (2*I_PARTICLE.lambda*J_PARTICLE.lambda/(I_PARTICLE.lambda+J_PARTICLE.lambda) + scorr)*kernelv*( J_PARTICLE.mass/density0)
+                        end
                     end
                 end
             end
         end
-        inSimDataStruct.particles[ii] = addTemppos(inSimDataStruct.particles[ii], positionCorrection)
+        dTemppos[ii] = positionCorrection
+    end
+
+    for ii in 1: P_FLUID_NUM
+        inSimDataStruct.particles[ii] = addTemppos(inSimDataStruct.particles[ii], dTemppos[ii])
     end
 end
 
@@ -175,6 +184,9 @@ function CalculateKernel(delPos::Vec2, inAnsDataStruct::AnalysisDataStruct)
     qq        =  absDelPos / H
     alpha = 7 / (4*π*H*H) # For 2-Dim
     if (absDelPos < 0.000000000000001)
+        return 0.0
+    end
+    if (2.0 < qq)
         return 0.0
     end
     return (-5 * alpha * (1- qq*0.5)^3 * qq / absDelPos) * delPos
