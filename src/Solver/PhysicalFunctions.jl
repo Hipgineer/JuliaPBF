@@ -43,7 +43,7 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
         I_density  = 0.0 
 
         epsilon = 0.000000000001
-        relaxationParameter = 1000#위치수정을 작게해줭..'ㅁ'..
+        relaxationParameter = (3.3/inAnsDataStruct.kernelRadius)^2 #위치수정을 작게해줭..'ㅁ'..
 
         kernel = 0.0
         I_kConstr  = 0.0
