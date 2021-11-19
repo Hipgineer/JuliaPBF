@@ -1,8 +1,10 @@
-"""
-                # Julia Position Based Fluid #
+""" 
+    Julia Position Based Fluid
 
-                       (C) Hipgineer
-                            
+          (C) Hipgineer
+             Jaybin         
+              2021
+                        
 """
 module JuliaPBF
 export
@@ -12,14 +14,12 @@ export
 include("Struct/StructPBF.jl") # Types are defined in the StructPBF Module
 using .StructPBF        # Load StructPBF Module
 
-    """
-    User Interface for Developer: \n
-        # ====================================================
-        Type : Module
-        Inner fucntions :
-            {AnalysisDataStruct} = UI_dev.parsing_xml_file({xmlFileDir::string})
-        # ====================================================
-    """
+    """ User Interface for Developer: \n
+        # ==================================================== \n
+        Type : Module \n
+        Inner fucntions : \n
+            {AnalysisDataStruct} = UI_dev.parsing_xml_file({xmlFileDir::string}) \n
+        # ==================================================== \n """
     module IO_dev
         export 
             # PreProcessing
@@ -31,15 +31,13 @@ using .StructPBF        # Load StructPBF Module
         include("IO_dev/PostProcessing.jl")
     end
 
-    """
-    PHYSICAL Solver: \n
-        # ====================================================
-        Type : Module
-        Inner fucntions :
-            {SimulationDataStruct} = Solver.PreProcessing({AnalysisDataStruct})
-            nothing = Solver.Update({SimulationDataStruct},{AnalysisDataStruct}) 
-        # ====================================================
-    """
+    """ PHYSICAL Solver: \n
+        # ==================================================== \n
+        Type : Module \n
+        Inner fucntions : \n
+            {SimulationDataStruct} = Solver.PreProcessing({AnalysisDataStruct}) \n
+            nothing = Solver.Update({SimulationDataStruct},{AnalysisDataStruct}) \n
+        # ==================================================== \n """
     module Solver
         export 
             PreProcessing,
@@ -47,11 +45,9 @@ using .StructPBF        # Load StructPBF Module
         include("Solver/PreProcessingFunctions.jl")
         include("Solver/PhysicalFunctions.jl")
 
-        """ 
-        PREPROCESSING in SOVER : 
-            In this section, allocate the initial analysis variables 
-            by creating the particles and the boundary lines.
-        """
+        """ PREPROCESSING in SOVER : \n
+            In this section, allocate the initial analysis variables
+            by creating the particles and the boundary lines. \n """
         function PreProcessing(inAnalysisDataStruct::AnalysisDataStruct)
             inSimulationDataStruct = SimulationDataStruct(GenParticles(inAnalysisDataStruct),
                                                         GenGrids(inAnalysisDataStruct),
@@ -63,11 +59,9 @@ using .StructPBF        # Load StructPBF Module
         end #PreProcessing
 
         
-        """ 
-        PHYSICAL CALCULATION : 
+        """ PHYSICAL CALCULATION : \n
             All physics for a dt are calcuated. The time marching
-            is conducted in main.jl. So, only physics exist.
-        """
+            is conducted in main.jl. So, only physics exist. \n """
         function Update(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
             Δt = inAnsDataStruct.timeStep.dt
             gravity = inAnsDataStruct.gravity
@@ -76,7 +70,7 @@ using .StructPBF        # Load StructPBF Module
             @time CalculateGravityForce(inSimDataStruct,gravity,Δt)
             # println("Calculate Something with Near Particles: ")
             # @time CalculateSomethingWithNearParticles(inSimDataStruct, inAnsDataStruct)
-            for iteration in 1:3  
+            for iteration in 1:3
                 println(iteration, "-Calculate Grid ID: ")
                 @time CalculateGridId(inSimDataStruct, inAnsDataStruct)
                 println(iteration, "-Sorting by Grid ID: ")

@@ -117,7 +117,7 @@ function Parsing_xml_file(xmldir::String)
                         in_analysisBox,            # Struct Box2(staPoint, endPoint)
                         in_nMaxParticles,          # Int64
                         in_maxParticleSize,        # Float64
-                        in_maxParticleSize,        # Float64 (Kernel Radius)
+                        in_maxParticleSize*1.5,    # Float64 (Kernel Radius)
                         in_a_initialBoxes,         # Vector{Box2}       // Struct Box2(staPoint, endPoint)
                         in_a_phases                # Vector{PhaseData}} // Struct PhaseData(type, Fluid, Solid)
                         )
