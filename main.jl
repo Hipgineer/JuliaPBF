@@ -11,5 +11,8 @@ analysisData   = JuliaPBF.IO_dev.Parsing_xml_file(INPUT_DIR)
 simulationData = JuliaPBF.Solver.PreProcessing(analysisData) # FillInitialBox, GenInitGrid 
 
 # Do Physical Calculation
-JuliaPBF.Solver.Update(simulationData, analysisData);
-@time JuliaPBF.IO_dev.Writing_ascii_file(simulationData, "out__"*lpad(1,5,"0"))
+for ii in 5001:10000
+    @time JuliaPBF.Solver.Update(simulationData, analysisData);
+    # @time 
+    JuliaPBF.IO_dev.Writing_ascii_file(simulationData, "out__"*lpad(ii,5,"0"))
+end 

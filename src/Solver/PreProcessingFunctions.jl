@@ -109,7 +109,9 @@ function FillInitialBox(inAnsDataStruct::AnalysisDataStruct, arParticleData::Vec
             initBox_size      = inAnsDataStruct.a_phases[initBox_phaseID].Fluid.size
             initBox_density   = inAnsDataStruct.a_phases[initBox_phaseID].Fluid.density
             initBox_viscosity = inAnsDataStruct.a_phases[initBox_phaseID].Fluid.viscosity
-            initBox_mass      = initBox_density * (initBox_size^2.0) #(π*(initBox_size*0.5)^2.0)
+            # initBox_mass      = initBox_density * (π*(initBox_size*0.5)^2.0) # Circle
+            # initBox_mass      = initBox_density * (initBox_size^2.0) # Box 
+            initBox_mass      = initBox_density * ((initBox_size^2.0)*0.85 + (π*(initBox_size*0.5)^2.0)*0.15)
         end
         boxDX = initBox_box.endPoint.x - initBox_box.staPoint.x
         boxDY = initBox_box.endPoint.y - initBox_box.staPoint.y
