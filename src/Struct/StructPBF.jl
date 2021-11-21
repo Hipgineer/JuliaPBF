@@ -54,6 +54,7 @@ export AnalysisDataStruct
     struct InitialBox
         phaseID     ::Int64
         box         ::Box2
+        vel         ::Vec2
     end
     struct FluidPropertyData
         name        ::String

@@ -103,6 +103,7 @@ function FillInitialBox(inAnsDataStruct::AnalysisDataStruct, arParticleData::Vec
     for initBox_i in 1:length(inAnsDataStruct.a_initialBox)
         initBox_phaseID = inAnsDataStruct.a_initialBox[initBox_i].phaseID
         initBox_box     = inAnsDataStruct.a_initialBox[initBox_i].box
+        initBox_vel     = inAnsDataStruct.a_initialBox[initBox_i].vel
         initBox_type    = inAnsDataStruct.a_phases[initBox_phaseID].type
         if initBox_type == "Fluid"
             initBox_name      = inAnsDataStruct.a_phases[initBox_phaseID].Fluid.name
@@ -121,7 +122,7 @@ function FillInitialBox(inAnsDataStruct::AnalysisDataStruct, arParticleData::Vec
                 yy = initBox_box.staPoint.y + (iy-0.5)*initBox_size
                 arParticleData[ID] = ParticleData(
                                         0,              # gridID :: Int64
-                                        Vec2(),         # vel    :: Vec2
+                                        initBox_vel,    # vel    :: Vec2
                                         Vec2(xx,yy),    # pos    :: Vec2
                                         Vec2(xx,yy),    # temppos:: Vec2
                                         0.0,             # lambda :: Float64

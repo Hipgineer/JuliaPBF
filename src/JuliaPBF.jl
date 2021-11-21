@@ -14,11 +14,13 @@ export
 include("Struct/StructPBF.jl") # Types are defined in the StructPBF Module
 using .StructPBF        # Load StructPBF Module
 
-    """ User Interface for Developer: \n
+
+    """ IN&OUT INTERFACE FOR SOLVER DEVELOPING: \n
         # ==================================================== \n
         Type : Module \n
         Inner fucntions : \n
-            {AnalysisDataStruct} = UI_dev.parsing_xml_file({xmlFileDir::string}) \n
+            {AnalysisDataStruct} = UI_dev.parsing_xml_file(xmlFileDir::string) \n
+                 nothing         = UI_dev.Writing_ascii_file(inSimDataStruct::SimulationDataStruct,  fileName::string) \n
         # ==================================================== \n """
     module IO_dev
         export 

@@ -70,8 +70,9 @@ function Parsing_xml_file(xmldir::String)
                     in_phaseID     = parse(Int64, attribute(XMLElement(depth2),"phaseID"))
                     in_startPoint  = Vec2(parse(Float64, attribute(XMLElement(depth2),"startX")), parse(Float64, attribute(XMLElement(depth2),"startY")))
                     in_endPoint    = Vec2(parse(Float64, attribute(XMLElement(depth2),"endX")),   parse(Float64, attribute(XMLElement(depth2),"endY")))
+                    in_initVelocity= Vec2(parse(Float64, attribute(XMLElement(depth2),"velX")),   parse(Float64, attribute(XMLElement(depth2),"velY")))
                     in_initialBox  = Box2(in_startPoint, in_endPoint)
-                    in_a_initialBoxes = push!(in_a_initialBoxes, InitialBox(in_phaseID,in_initialBox))
+                    in_a_initialBoxes = push!(in_a_initialBoxes, InitialBox(in_phaseID,in_initialBox,in_initVelocity))
                 end
             end
         end
