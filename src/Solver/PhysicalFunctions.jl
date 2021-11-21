@@ -114,14 +114,16 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
                         if ii != jj 
                             kernelv= CalculateKernel(delPos,inAnsDataStruct)
                             #Tensile Instability
-                            dq = 0.1
-                            k  = 0.1
-                            n  = 4.0
+                            dq = inAnsDataStruct.tensileInstability.dq
+                            k  = inAnsDataStruct.tensileInstability.k
+                            n  = inAnsDataStruct.tensileInstability.n
                             kernela= CalculateKernel(absDelPos,inAnsDataStruct)
                             kernelb= CalculateKernel(dq*inAnsDataStruct.kernelRadius,inAnsDataStruct)
                             scorr = -k*(kernela/kernelb)^n
                             #
-                            positionCorrection += (2*I_PARTICLE.lambda*J_PARTICLE.lambda/(I_PARTICLE.lambda+J_PARTICLE.lambda) + scorr)*kernelv*( J_PARTICLE.mass/density0)
+                            # positionCorrection += (2*I_PARTICLE.lambda*J_PARTICLE.lambda/(I_PARTICLE.lambda+J_PARTICLE.lambda) + scorr)*kernelv*(J_PARTICLE.mass/density0)
+                            # positionCorrection += (J_PARTICLE.lambda + scorr)*kernelv*( J_PARTICLE.mass/density0)
+                            positionCorrection += ((I_PARTICLE.lambda+J_PARTICLE.lambda)*0.5 + scorr)*kernelv*( J_PARTICLE.mass/density0)
                         end
                     end
                 end

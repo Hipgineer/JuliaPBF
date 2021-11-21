@@ -41,7 +41,7 @@ export Vec2, Vec2Array, iVec2, Box2
 # be changed after input parsing(inputParsin
 # g.jl). All variables should be located in 
 # SimulationDataStruct.
-export TimeStep, AnalysisBox, InitialBox, FluidPropertyData, SolidPropertyData, PhaseData
+export TimeStep, AnalysisBox, InitialBox, FluidPropertyData, SolidPropertyData, PhaseData, TensileInstability
 export AnalysisDataStruct
     # ELEMENT STRUCT
     struct TimeStep
@@ -71,6 +71,12 @@ export AnalysisDataStruct
         Fluid       ::FluidPropertyData
         Solid       ::SolidPropertyData
     end
+    mutable struct TensileInstability
+        k           ::Float64
+        dq          ::Float64
+        n           ::Float64
+    end
+
     # MAIN STRUCT
     struct AnalysisDataStruct
         timeStep        ::TimeStep
@@ -79,6 +85,7 @@ export AnalysisDataStruct
         nMaxParticles   ::Int64
         maxParticleSize ::Float64
         kernelRadius    ::Float64
+        tensileInstability ::TensileInstability
         a_initialBox    ::Vector{InitialBox}
         a_phases        ::Vector{PhaseData}
     end

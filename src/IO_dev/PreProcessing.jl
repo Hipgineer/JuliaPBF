@@ -13,6 +13,7 @@ function Parsing_xml_file(xmldir::String)
     in_timeStep         = TimeStep()
     in_gravity          = Vec2()
     in_analysisBox      = Box2()
+    in_tensileInstability = TensileInstability(0.0,0.0,0.0)
     in_nMaxParticles    = 0
     in_maxParticleSize  = 0.0
     in_a_initialBoxes   = []
@@ -49,6 +50,12 @@ function Parsing_xml_file(xmldir::String)
         if name(depth1) == "Particles"
             in_nMaxParticles   = parse(Int64, attribute(XMLElement(depth1),"nMaxParticles"))
             in_maxParticleSize = parse(Float64, attribute(XMLElement(depth1),"maxParticleSize"))
+        end
+
+        if name(depth1) == "TensileInstability"
+            in_tensileInstability.k   = parse(Float64, attribute(XMLElement(depth1),"k"))
+            in_tensileInstability.dq  = parse(Float64, attribute(XMLElement(depth1),"dq"))
+            in_tensileInstability.n   = parse(Float64, attribute(XMLElement(depth1),"n"))
         end
 
         if name(depth1) == "AnalysisBox"
@@ -117,7 +124,8 @@ function Parsing_xml_file(xmldir::String)
                         in_analysisBox,            # Struct Box2(staPoint, endPoint)
                         in_nMaxParticles,          # Int64
                         in_maxParticleSize,        # Float64
-                        in_maxParticleSize*1.5,    # Float64 (Kernel Radius)
+                        in_maxParticleSize*1.04,    # Float64 (Kernel Radius)
+                        in_tensileInstability,     # TensileInstability
                         in_a_initialBoxes,         # Vector{Box2}       // Struct Box2(staPoint, endPoint)
                         in_a_phases                # Vector{PhaseData}} // Struct PhaseData(type, Fluid, Solid)
                         )
