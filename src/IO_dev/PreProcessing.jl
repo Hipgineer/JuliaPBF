@@ -11,6 +11,7 @@ function Parsing_xml_file(xmldir::String)
     end
 
     in_timeStep         = TimeStep()
+    in_EndTime          = 0.0
     in_gravity          = Vec2()
     in_analysisBox      = Box2()
     in_tensileInstability = TensileInstability(0.0,0.0,0.0)
@@ -39,6 +40,10 @@ function Parsing_xml_file(xmldir::String)
                 ErrorException("Check Tims Step")
             end
             in_timeStep = TimeStep(in_type,in_dt,in_cfl,in_dtMin,in_dtMax)
+        end
+
+        if name(depth1) == "EndTime"
+            in_EndTime = parse(Float64, attribute(XMLElement(depth1),"sec"))
         end
 
         if name(depth1) == "Gravity"
@@ -121,11 +126,12 @@ function Parsing_xml_file(xmldir::String)
     # OUTPUT
     return AnalysisDataStruct(
                         in_timeStep,               # Struct TimeStep(type, dt, cfl, dtMin, dtMax) 
+                        in_EndTime,                # Float64
                         in_gravity,                # Struct Gravity(x,y)
                         in_analysisBox,            # Struct Box2(staPoint, endPoint)
                         in_nMaxParticles,          # Int64
                         in_maxParticleSize,        # Float64
-                        in_maxParticleSize*1.04,    # Float64 (Kernel Radius)
+                        in_maxParticleSize*1.04,   # Float64 (Kernel Radius)
                         in_tensileInstability,     # TensileInstability
                         in_a_initialBoxes,         # Vector{Box2}       // Struct Box2(staPoint, endPoint)
                         in_a_phases                # Vector{PhaseData}} // Struct PhaseData(type, Fluid, Solid)

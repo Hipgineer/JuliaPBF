@@ -2,17 +2,24 @@
 push!(LOAD_PATH,pwd())
 using JuliaPBF
 using BenchmarkTools
-
+using Printf
 
 # Parsing Inputs & Define Analysis Data
-INPUT_DIR      = "./JuliaPBF/input.xml"
-analysisData   = JuliaPBF.IO_dev.Parsing_xml_file(INPUT_DIR)
+INPUT_DIR   = "./JuliaPBF/input.xml"
+
 # Initialize Simulation Data
-simulationData = JuliaPBF.Solver.PreProcessing(analysisData) # FillInitialBox, GenInitGrid 
+ANALYDATA   = JuliaPBF.IO_dev.Parsing_xml_file(INPUT_DIR)
+SIMULDATA   = JuliaPBF.Solver.PreProcessing(ANALYDATA) # FillInitialBox, GenInitGrid 
 
 # Do Physical Calculation
-for ii in 1:100
-    @time JuliaPBF.Solver.Update(simulationData, analysisData);
-    # @time 
-    JuliaPBF.IO_dev.Writing_ascii_file(simulationData, "out__"*lpad(ii,5,"0"))
+curr_time = 0.0 
+ii        = 0 
+while curr_time < ANALYDATA.endTime
+# for ii in 1:100 #Int(floot(ANALYDATA.EndTimeStep))
+    curr_time += ANALYDATA.timeStep.dt
+    @printf("Time = %10.5f  spends ",curr_time)
+    @time JuliaPBF.Solver.Update(SIMULDATA, ANALYDATA);
+    
+    ii += 1
+    JuliaPBF.IO_dev.Writing_ascii_file(SIMULDATA, "out__"*lpad(ii,5,"0"))
 end 

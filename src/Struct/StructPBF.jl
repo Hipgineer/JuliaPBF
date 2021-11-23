@@ -81,6 +81,7 @@ export AnalysisDataStruct
     # MAIN STRUCT
     struct AnalysisDataStruct
         timeStep        ::TimeStep
+        endTime         ::Float64
         gravity         ::Vec2
         analysisBox     ::Box2
         nMaxParticles   ::Int64
@@ -151,12 +152,11 @@ export SimulationDataStruct
     end
     # MAIN STRUCT
     struct SimulationDataStruct
-        # particles   ::ParticleData # For SoA
         particles       ::Vector{ParticleData} # For AoS
         grids           ::GridData
         phases          ::Vector{PhaseData}
         boundaries      ::Vector{BoundaryData}
-        alivedParticles ::Vector{Int64} #mutable로 하려고 벡터로지정;;;
+        alivedParticles ::Vector{Int64} # Fluids / Solids
     end
 
 
