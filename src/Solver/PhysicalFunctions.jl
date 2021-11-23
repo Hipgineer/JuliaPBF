@@ -1,4 +1,5 @@
 using JuliaPBF.StructPBF
+include("Kernels.jl")
 
 function CalculateGravityForce(inSimDataStruct::SimulationDataStruct,gravity::Vec2, Δt::Float64)
     for ii in 1:length(inSimDataStruct.particles)
@@ -62,8 +63,7 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
                 absDelPos2 = abs2(delPos)
                 absDelPos  = sqrt(absDelPos2)
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
-
-                    kernel = CalculateKernel(absDelPos, inAnsDataStruct)
+                    kernel = Kernels.Wendland(absDelPos, inAnsDataStruct)
                     I_density   += I_PARTICLE.mass * kernel
                     
                         if ii == jj
@@ -71,9 +71,10 @@ function CalculateLambda(inSimDataStruct::SimulationDataStruct, inAnsDataStruct:
                         end
 
                     if absDelPos > epsilon
-                        kernelv= CalculateKernel(delPos,inAnsDataStruct)
-                        I_kConstr   += kernelv*(J_PARTICLE.mass/density0)
-                        I_LambdaDen += abs2(kernelv*(J_PARTICLE.mass/density0))
+                        kernelv= Kernels.WendlandGrad(delPos,inAnsDataStruct)
+                        dC = kernelv*(J_PARTICLE.mass/density0)
+                        I_kConstr   += dC
+                        I_LambdaDen += abs2(dC)
                     end
                 end
             end
@@ -87,7 +88,11 @@ end
 
 function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
     P_FLUID_NUM = inSimDataStruct.alivedParticles[1] # 1: alived Fluid
-    dTemppos = Vector{Vec2}(undef, P_FLUID_NUM)
+    dTemppos = Vector{Vec2}(undef, P_FLUID_NUM) # const로 파두면 좋을거 같은데
+    #Tensile Instability
+    dq = inAnsDataStruct.tensileInstability.dq
+    k  = inAnsDataStruct.kernelRadius*inAnsDataStruct.kernelRadius # inAnsDataStruct.tensileInstability.k
+    n  = inAnsDataStruct.tensileInstability.n
     #이거를 어떤 폼으로 만들어 버리는건 어때? 가능한가?
     for ii in 1: P_FLUID_NUM
         I_PARTICLE = inSimDataStruct.particles[ii]
@@ -112,17 +117,10 @@ function CalculatePositionCorrection(inSimDataStruct::SimulationDataStruct, inAn
                 if absDelPos < 2*inAnsDataStruct.kernelRadius
                     if absDelPos > epsilon
                         if ii != jj 
-                            kernelv= CalculateKernel(delPos,inAnsDataStruct)
-                            #Tensile Instability
-                            dq = inAnsDataStruct.tensileInstability.dq
-                            k  = inAnsDataStruct.tensileInstability.k
-                            n  = inAnsDataStruct.tensileInstability.n
-                            kernela= CalculateKernel(absDelPos,inAnsDataStruct)
-                            kernelb= CalculateKernel(dq*inAnsDataStruct.kernelRadius,inAnsDataStruct)
+                            kernelv= Kernels.WendlandGrad(delPos,inAnsDataStruct)
+                            kernela= Kernels.Wendland(absDelPos,inAnsDataStruct)
+                            kernelb= Kernels.Wendland(dq*inAnsDataStruct.kernelRadius,inAnsDataStruct)
                             scorr = -k*(kernela/kernelb)^n
-                            #
-                            # positionCorrection += (2*I_PARTICLE.lambda*J_PARTICLE.lambda/(I_PARTICLE.lambda+J_PARTICLE.lambda) + scorr)*kernelv*(J_PARTICLE.mass/density0)
-                            # positionCorrection += (J_PARTICLE.lambda + scorr)*kernelv*( J_PARTICLE.mass/density0)
                             positionCorrection += ((I_PARTICLE.lambda+J_PARTICLE.lambda)*0.5 + scorr)*kernelv*( J_PARTICLE.mass/density0)
                         end
                     end
