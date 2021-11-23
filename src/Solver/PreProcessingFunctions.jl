@@ -125,7 +125,7 @@ function FillInitialBox(inAnsDataStruct::AnalysisDataStruct, arParticleData::Vec
                                         initBox_vel,    # vel    :: Vec2
                                         Vec2(xx,yy),    # pos    :: Vec2
                                         Vec2(xx,yy),    # temppos:: Vec2
-                                        0.0,             # lambda :: Float64
+                                        0.0,            # lambda :: Float64
                                         initBox_mass,   # mass   :: Float64
                                         initBox_phaseID)# phase  :: Int64
                 ID += 1
