@@ -6,7 +6,7 @@ Position Based Fluid by Julia
 
 ## Dependencies
 
-To run this codes, you need to install the Julia higher than version 1.0 with below pakages.
+To run this codes, you need to install the Julia higher than version 1.6 with below pakages.
 ```
 Pkg.add("Printf")
 Pkg.add("LightXML")
