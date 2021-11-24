@@ -18,7 +18,7 @@ while curr_time < ANALYDATA.endTime
     curr_time += ANALYDATA.timeStep.dt
     @printf("Time = %10.5f \n",curr_time)
     @printf("  Update for          :")
-    @time JuliaPBF.Solver.Update(SIMULDATA, ANALYDATA);
+    @time JuliaPBF.Solver.Update(SIMULDATA, ANALYDATA)
     
     ii += 1
     @printf("  Writing Output for  :")
