@@ -6,28 +6,27 @@
               2021
                         
 """
-module JuliaPBF
+module  JuliaPBF
+const   JULIAPBF_VERSION = v"0.0.1"
+export  StructPBF,
+        IO_dev,
+        Solver
 
-export StructPBF,
-       IO_dev,
-       Solver
+        ##############
+        # DATA TYPES #
+        ##############
+        include("Struct/StructPBF.jl")  # Types are defined in the StructPBF Module
+        using .StructPBF                # Load StructPBF Module
 
-##############
-# DATA TYPES #
-##############
-include("Struct/StructPBF.jl")  # Types are defined in the StructPBF Module
-using .StructPBF                # Load StructPBF Module
+        ##############
+        # In&Outputs #
+        ##############
+        include("IO_dev/IO.jl")
+        using .IO_dev
 
-##############
-# In&Outputs #
-##############
-include("IO_dev/IO.jl")
-using .IO_dev
-
-##############
-# MainSolver #
-##############
-include("Solver/Solver.jl")
-using .Solver
-
+        ##############
+        # MainSolver #
+        ##############
+        include("Solver/Solver.jl")
+        using .Solver
 end
