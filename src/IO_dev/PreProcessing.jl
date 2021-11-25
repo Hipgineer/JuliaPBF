@@ -1,6 +1,15 @@
 using LightXML
 using JuliaPBF.StructPBF
 
+function Parsing_input_file(inputdir::String)
+    # if xml
+    #   return Parsing_xml_file(inpudir)
+    # else if json
+    #   return Parsing_json_file(inputdir)
+end
+
+# PRIVATE
+
 function Parsing_xml_file(xmldir::String)
         
     # OPEN XML OBJECT
@@ -138,3 +147,7 @@ function Parsing_xml_file(xmldir::String)
                         )
 
 end # function parsing_xml_file
+
+function Parsing_json_file(jsondir::String)
+    # Need to develop it
+end # function Parsing_json_file
