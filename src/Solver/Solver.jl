@@ -13,9 +13,7 @@ export
 include("InitializingFunctions.jl")
 include("PhysicalFunctions.jl")
 
-    """ PREPROCESSING in SOVER : \n
-        In this section, allocate the initial analysis variables
-        by creating the particles and the boundary lines. \n """
+    """ PREPROCESSING in SOVER """
     function PreProcessing(inAnalysisDataStruct::AnalysisDataStruct)
         inSimulationDataStruct = SimulationDataStruct(GenParticles(inAnalysisDataStruct),
                                                     GenGrids(inAnalysisDataStruct),
@@ -27,9 +25,7 @@ include("PhysicalFunctions.jl")
     end #PreProcessing
 
     
-    """ PHYSICAL CALCULATION : \n
-        All physics for a dt are calcuated. The time marching
-        is conducted in main.jl. So, only physics exist. \n """
+    """ Physical Calculation for a Time Step """
     function Update(inSimDataStruct::SimulationDataStruct, inAnsDataStruct::AnalysisDataStruct)
         Δt = inAnsDataStruct.timeStep.dt
         gravity = inAnsDataStruct.gravity

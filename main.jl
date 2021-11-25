@@ -1,17 +1,22 @@
-# set
+##################
+# Load Libraries #
+##################
 push!(LOAD_PATH,pwd())
 using JuliaPBF
 using BenchmarkTools
 using Printf
 
-# Parsing Inputs & Define Analysis Data
-INPUT_DIR   = "./JuliaPBF/input.xml"
-
-# Initialize Simulation Data
-ANALYDATA   = JuliaPBF.IO_dev.Parsing_xml_file(INPUT_DIR)
+##################
+# Initialization #
+##################
+INPUT_DIR   = "./JuliaPBF/input.xml" # Directory xml Inputs
+ANALYDATA   = JuliaPBF.IO_dev.Parsing_xml_file(INPUT_DIR) # Parsing Inputs
 SIMULDATA   = JuliaPBF.Solver.PreProcessing(ANALYDATA) # FillInitialBox, GenInitGrid 
 
-# Do Physical Calculation
+
+##############
+# Run Solver #
+##############
 curr_time = 0.0 
 ii        = 0 
 while curr_time < ANALYDATA.endTime
