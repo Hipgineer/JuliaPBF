@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AnalysisSetting>
+
+    <!-- Simulation Setting -->
+    <TimeStep type="1" dt="0.016"/>
+    <EndTime sec="10.0"/>
+    <Gravity x="0.0" y="0.0"/>
+    <Particles nMaxParticles="100000" maxParticleSize="0.025"/>
+    <TensileInstability k="0.01" dq="0.1" n="4.0"/>            <!-- for 2D, k=0.001 dq=0.1 n=4.0 are default values -->
+    <AnalysisBox startX="0.0" startY="0.0" endX="10.0" endY="10.0"/>
+    
+    <!-- Propoerty Setting -->
+    <PhaseProperties number="1">
+        <phase type="Fluid" name="water" size="0.025" density="1000.0" viscosity="0.001"/>
+        <!-- <phase type="Solid" name="rock" size="0.001" density="2650"> </phase> -->
+    </PhaseProperties>
+
+    <!-- Particle Setting -->
+    <InitialBox number="2">
+        <!-- 초기유속 넣는 것도 작업해야함 -->
+        <initBox phaseID="1" startX="1.0" startY="2.0" endX="2.0" endY="3.0" velX="0.0" velY="0.0"/>
+        <initBox phaseID="1" startX="1.25" startY="3.4" endX="1.75" endY="3.9" velX="0.0" velY="-0.1"/>
+    </InitialBox>
+
+    <!-- Boundary Setting -->
+    <Boundaries number="3">
+        <Line startX="0.0" startY="0.0" endX="10.0" endY="10.0"/>
+        <Line startX="0.0" startY="0.0" endX="10.0" endY="10.0"/>
+        <Box startX="0.0" startY="0.0" endX="10.0" endY="10.0"/>
+    </Boundaries>
+    
+</AnalysisSetting>
