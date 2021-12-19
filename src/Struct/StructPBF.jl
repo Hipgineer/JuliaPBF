@@ -11,6 +11,7 @@ export
     include("AnalysisDataStruct.jl")
     include("SimulationDataStruct.jl")
 
+    """시뮬레이션 데이터"""
     struct AnalysisDataStruct
         timeStep            ::TimeStep
         endTime             ::Float64

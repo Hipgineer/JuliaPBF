@@ -16,11 +16,11 @@ include("PhysicalFunctions.jl")
     """ PREPROCESSING in SOVER """
     function PreProcessing(inAnalysisDataStruct::AnalysisDataStruct)
         inSimulationDataStruct = SimulationDataStruct(GenParticles(inAnalysisDataStruct),
-                                                    GenGrids(inAnalysisDataStruct),
-                                                    GenPhases(inAnalysisDataStruct),
-                                                    GenBoundaries(inAnalysisDataStruct),
-                                                    [inAnalysisDataStruct.nMaxParticles]        # number of Alive Particles 
-                                                    )
+                                                      GenGrids(inAnalysisDataStruct),
+                                                      GenPhases(inAnalysisDataStruct),
+                                                      GenBoundaries(inAnalysisDataStruct),
+                                                      [inAnalysisDataStruct.nMaxParticles]        # initializing number of Alive Particles 
+                                                     )
         return inSimulationDataStruct
     end #PreProcessing
 
